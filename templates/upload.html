@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Waste Sorting System</title>
+    <script>
+        async function classifyWaste(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            const formData = new FormData(document.getElementById('uploadForm'));
+
+            // Make a POST request to the classify endpoint
+            const response = await fetch('/classify', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+            const resultContainer = document.getElementById('result');
+
+            if (response.ok) {
+                // Display the classification result
+                resultContainer.innerHTML = `<h2>Classification Result</h2>
+                                             <p><strong>Description:</strong> ${result.description}</p>
+                                             <p><strong>Classification:</strong> ${result.classification}</p>`;
+            } else {
+                // Display an error message
+                resultContainer.innerHTML = `<p>Error: ${result.error}</p>`;
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Welcome to the Smart Waste Sorting System</h1>
+    <h2>Upload Waste Item</h2>
+    <form id="uploadForm" onsubmit="classifyWaste(event)" enctype="multipart/form-data">
+        <label for="image">Select Image:</label>
+        <input type="file" name="image" id="image" required><br><br>
+
+        <label for="description">Description:</label>
+        <input type="text" name="description" id="description" required><br><br>
+
+        <button type="submit">Classify Waste</button>
+    </form>
+    <div id="result"></div>
+</body>
+</html>
